@@ -1,15 +1,26 @@
-import { FakeCalendarStore, GetCalendarUseCase } from "./get-calendar.usecase";
+import { FAKE_EVENTS } from "./fake-calendar-events";
+import { FakeCalendarStore } from "./fake-calendar.store";
+import { GetCalendarUseCase } from "./get-calendar.usecase";
 
 describe("Get Calendar UseCase", () => {
   const fakeCalendarStore = new FakeCalendarStore();
-  it("should return a list of games", () => {
+  it("should return the list of all games", () => {
     const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
     const calendar = getCalendarUseCase.execute();
-    expect(calendar).toEqual(fakeCalendarStore.getCalendar());
+    expect(calendar).toEqual(FAKE_EVENTS);
   });
-  it("should return a list of games for specified league", () => {
-    const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
-    const calendar = getCalendarUseCase.execute("Ligue 1");
-    expect(calendar).toEqual(fakeCalendarStore.getCalendar("Ligue 1"));
-  });
+  it.each`
+    league
+    ${"Ligue 1"}
+    ${"Champions League"}
+  `(
+    "should return the list of games for league $league",
+    ({ league }: { league: string }) => {
+      const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
+      const calendar = getCalendarUseCase.execute(league);
+      expect(calendar).toEqual(
+        FAKE_EVENTS.filter((event) => event.league === league)
+      );
+    }
+  );
 });
