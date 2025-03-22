@@ -1,4 +1,4 @@
-import { CalendarStore } from "./calendar.store";
+import { CalendarStore } from "../stores/calendar.store";
 
 export class GetCalendarUseCase {
   constructor(private readonly calendarStore: CalendarStore) {}

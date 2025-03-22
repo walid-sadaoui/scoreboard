@@ -1,4 +1,4 @@
-import { CalendarEvent } from "./calendar-event.entity";
+import { CalendarEvent } from "../entities/calendar-event.entity";
 
 export const FAKE_EVENTS: CalendarEvent[] = [
   {

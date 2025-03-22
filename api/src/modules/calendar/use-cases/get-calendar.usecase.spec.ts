@@ -1,5 +1,5 @@
-import { FAKE_EVENTS } from "./fake-calendar-events";
-import { FakeCalendarStore } from "./fake-calendar.store";
+import { FAKE_EVENTS } from "../stores/fake-calendar-events";
+import { FakeCalendarStore } from "../stores/fake-calendar.store";
 import { GetCalendarUseCase } from "./get-calendar.usecase";
 
 describe("Get Calendar UseCase", () => {

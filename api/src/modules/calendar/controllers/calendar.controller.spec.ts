@@ -1,8 +1,8 @@
 import { CalendarController } from "./calendar.controller";
 
-import { FAKE_EVENTS } from "./fake-calendar-events";
-import { FakeCalendarStore } from "./fake-calendar.store";
-import { GetCalendarUseCase } from "./get-calendar.usecase";
+import { FAKE_EVENTS } from "../stores/fake-calendar-events";
+import { FakeCalendarStore } from "../stores/fake-calendar.store";
+import { GetCalendarUseCase } from "../use-cases/get-calendar.usecase";
 
 describe("Calendar Controller", () => {
   let fakeCalendarStore: FakeCalendarStore;
