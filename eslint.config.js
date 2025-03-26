@@ -9,7 +9,7 @@ export default [
   // Base configurations for all projects
   {
     files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
-    ignores: ["**/dist/**", "**/build/**", "**/node_modules/**"],
+    ignores: ["**/dist/**", "**/build/**", "**/node_modules/**", "**/.next/**"],
     plugins: {
       prettier: prettierPlugin,
     },
@@ -21,7 +21,7 @@ export default [
   // TypeScript configuration for all projects
   {
     files: ["**/*.ts", "**/*.tsx"],
-    ignores: ["**/dist/**", "**/build/**", "**/node_modules/**"],
+    ignores: ["**/dist/**", "**/build/**", "**/node_modules/**", "**/.next/**"],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
