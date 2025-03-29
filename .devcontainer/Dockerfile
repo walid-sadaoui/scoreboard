@@ -8,3 +8,5 @@ RUN export SHELL="bash" && pnpm setup
 
 ENV PNPM_HOME="/home/node/.local/share/pnpm"
 ENV PATH="${PNPM_HOME}:${PATH}"
+
+RUN pnpm add turbo --global
