@@ -2,21 +2,9 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FAKE_EVENTS } from "@scoreboard/types";
 
 export const CalendarPage: React.FC = () => {
-  const FAKE_EVENTS = [
-    {
-      homeTeam: "Olympique Lyonnais",
-      awayTeam: "Olympique de Marseille",
-      league: "Ligue 1",
-    },
-    {
-      homeTeam: "Paris Saint-Germain",
-      awayTeam: "Liverpool FC",
-      league: "Champions League",
-    },
-  ];
-
   return (
     <main className="m-auto">
       {FAKE_EVENTS.map((event) => {

@@ -126,6 +126,9 @@ importers:
       '@reduxjs/toolkit':
         specifier: ^2.6.1
         version: 2.6.1(react-redux@9.2.0(@types/react@19.0.2)(react@19.0.0)(redux@5.0.1))(react@19.0.0)
+      '@scoreboard/types':
+        specifier: workspace:*
+        version: link:../packages/types
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
