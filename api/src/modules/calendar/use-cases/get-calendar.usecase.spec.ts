@@ -1,4 +1,4 @@
-import { FAKE_EVENTS } from "../stores/fake-calendar-events";
+import { FAKE_EVENTS } from "@scoreboard/types";
 import { FakeCalendarStore } from "../stores/fake-calendar.store";
 import { GetCalendarUseCase } from "./get-calendar.usecase";
 

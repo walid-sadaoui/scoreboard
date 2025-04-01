@@ -1,5 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import { CalendarEvent } from "../entities/calendar-event.entity";
+import { CalendarEvent } from "@scoreboard/types";
 import { GetCalendarUseCase } from "../use-cases/get-calendar.usecase";
 
 @Controller("calendar")

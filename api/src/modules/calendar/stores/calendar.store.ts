@@ -1,4 +1,4 @@
-import { CalendarEvent } from "../entities/calendar-event.entity";
+import { CalendarEvent } from "@scoreboard/types";
 
 export interface CalendarStore {
   getCalendar(league?: string): CalendarEvent[];

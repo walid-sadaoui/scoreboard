@@ -1,5 +1,5 @@
 import { CalendarStore } from "./calendar.store";
-import { FAKE_EVENTS } from "./fake-calendar-events";
+import { FAKE_EVENTS } from "@scoreboard/types";
 
 export class FakeCalendarStore implements CalendarStore {
   constructor() {}

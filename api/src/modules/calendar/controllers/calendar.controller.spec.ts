@@ -1,6 +1,6 @@
 import { CalendarController } from "./calendar.controller";
 
-import { FAKE_EVENTS } from "../stores/fake-calendar-events";
+import { FAKE_EVENTS } from "@scoreboard/types";
 import { FakeCalendarStore } from "../stores/fake-calendar.store";
 import { GetCalendarUseCase } from "../use-cases/get-calendar.usecase";
 
