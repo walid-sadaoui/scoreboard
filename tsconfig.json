@@ -7,6 +7,10 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "references": [{ "path": "./app" }, { "path": "./api" }],
+  "references": [
+    { "path": "./app" },
+    { "path": "./api" },
+    { "path": "./packages/types" }
+  ],
   "files": [] // Empty as this is just a reference config
 }
