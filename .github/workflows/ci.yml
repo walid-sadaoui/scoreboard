@@ -1,0 +1,203 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  HUSKY: 0
+
+jobs:
+  build:
+    name: Build and Test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    # To use Remote Caching, uncomment the next lines and follow the steps below.
+    # env:
+    #  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    #  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.7.0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: |
+          pnpm turbo build
+          ls -la
+
+      # - name: Test
+      #   run: pnpm test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      matrix:
+        node-version: [22]
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: "true"
+
+      - name: 📥 Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.7.0
+
+      - name: ⚙️ Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+
+      - name: 📥 Install dependencies
+        run: pnpm install
+
+      - name: ✨ Quality check
+        run: pnpm run lint
+
+      - name: 📦 Build Scoreboard
+        run: |
+          pnpm turbo build
+
+      - name: ✨ Prepare production dependencies
+        run: pnpm install --prod
+
+      - name: Deploy Types Package to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz
+          path: packages/types/dist/
+          remote_path: /var/www/scoreboard/packages/types
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: ${{ secrets.VPS_PORT }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy API package.json to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz
+          path: api/package.json
+          remote_path: /var/www/scoreboard/api/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: ${{ secrets.VPS_PORT }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy API to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz
+          path: api/dist/
+          remote_path: /var/www/scoreboard/api/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: ${{ secrets.VPS_PORT }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy App package.json to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz
+          path: app/package.json
+          remote_path: /var/www/scoreboard/app/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: ${{ secrets.VPS_PORT }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy App to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz
+          path: app/.next/
+          remote_path: /var/www/scoreboard/app/.next/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: ${{ secrets.VPS_PORT }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy App to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz
+          path: app/public/
+          remote_path: /var/www/scoreboard/app/public/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: ${{ secrets.VPS_PORT }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy node_modules to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avzr
+          path: node_modules/
+          remote_path: /var/www/scoreboard/node_modules/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: ${{ secrets.VPS_PORT }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy API node_modules to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avzr
+          path: api/node_modules/
+          remote_path: /var/www/scoreboard/api/node_modules/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: ${{ secrets.VPS_PORT }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy App node_modules to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avzr
+          path: app/node_modules/
+          remote_path: /var/www/scoreboard/app/node_modules/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: ${{ secrets.VPS_PORT }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Restart API service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          port: ${{ secrets.VPS_PORT }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/scoreboard/api
+            pm2 restart scoreboard-api || pm2 start main.js --name scoreboard-api
+
+      - name: Restart App service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          port: ${{ secrets.VPS_PORT }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/scoreboard/app
+            pm2 restart scoreboard-app || pm2 start ecosystem.config.js
