@@ -1,21 +1,28 @@
-import { CalendarController } from "./calendar.controller";
-
+import * as request from "supertest";
 import { FAKE_EVENTS } from "@scoreboard/types";
-import { FakeCalendarStore } from "../stores/fake-calendar.store";
-import { GetCalendarUseCase } from "../use-cases/get-calendar.usecase";
+import { Test } from "@nestjs/testing";
+import { NestApplication } from "@nestjs/core";
+import { AppModule } from "../../../app.module";
 
 describe("Calendar Controller", () => {
-  let fakeCalendarStore: FakeCalendarStore;
-  let getCalendarUseCase: GetCalendarUseCase;
-  let calendarController: CalendarController;
+  let app: NestApplication;
 
-  beforeEach(() => {
-    fakeCalendarStore = new FakeCalendarStore();
-    getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
-    calendarController = new CalendarController(getCalendarUseCase);
+  beforeEach(async () => {
+    const moduleFixture = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+    app = moduleFixture.createNestApplication();
+    await app.init();
   });
 
-  it("should return the list of all games", () => {
-    expect(calendarController.findAll()).toEqual(FAKE_EVENTS);
+  afterEach(async () => {
+    await app.close();
+  });
+
+  it("should return the list of all games", async () => {
+    return request(app.getHttpServer())
+      .get("/calendar")
+      .expect(200)
+      .expect(FAKE_EVENTS);
   });
 });
