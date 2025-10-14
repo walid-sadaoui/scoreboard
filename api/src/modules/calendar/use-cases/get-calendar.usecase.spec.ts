@@ -4,9 +4,9 @@ import { GetCalendarUseCase } from "./get-calendar.usecase";
 
 describe("Get Calendar UseCase", () => {
   const fakeCalendarStore = new FakeCalendarStore();
-  it("should return the list of all games", () => {
+  it("should return the list of all games", async () => {
     const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
-    const calendar = getCalendarUseCase.execute();
+    const calendar = await getCalendarUseCase.execute();
     expect(calendar).toEqual(FAKE_EVENTS);
   });
   it.each`
@@ -15,9 +15,9 @@ describe("Get Calendar UseCase", () => {
     ${"Champions League"}
   `(
     "should return the list of games for league $league",
-    ({ league }: { league: string }) => {
+    async ({ league }: { league: string }) => {
       const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
-      const calendar = getCalendarUseCase.execute(league);
+      const calendar = await getCalendarUseCase.execute(league);
       expect(calendar).toEqual(
         FAKE_EVENTS.filter((event) => event.league === league)
       );

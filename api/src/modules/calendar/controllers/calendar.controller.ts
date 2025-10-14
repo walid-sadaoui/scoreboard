@@ -9,7 +9,7 @@ export class CalendarController {
     private readonly getCalendarUseCase: GetCalendarUseCase
   ) {}
   @Get()
-  findAll(): CalendarEvent[] {
-    return this.getCalendarUseCase.execute();
+  async findAll(): Promise<CalendarEvent[]> {
+    return await this.getCalendarUseCase.execute();
   }
 }
