@@ -4,6 +4,7 @@ export class GetCalendarUseCase {
   constructor(private readonly calendarStore: CalendarStore) {}
 
   async execute(league?: string) {
-    return await this.calendarStore.getCalendar(league);
+    const events = await this.calendarStore.getCalendar();
+    return league ? events.filter((event) => event.league === league) : events;
   }
 }

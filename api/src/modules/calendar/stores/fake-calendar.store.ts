@@ -4,8 +4,7 @@ import { FAKE_EVENTS } from "@scoreboard/types";
 export class FakeCalendarStore implements CalendarStore {
   constructor() {}
 
-  async getCalendar(league?: string) {
-    if (league) return FAKE_EVENTS.filter((game) => game.league === league);
+  async getCalendar() {
     return FAKE_EVENTS;
   }
 }
