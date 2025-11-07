@@ -25,4 +25,14 @@ describe("Calendar Controller", () => {
       .expect(200)
       .expect(FAKE_EVENTS);
   });
+
+  it("should return filtered events when league query parameter is provided", async () => {
+    const expectedEvents = FAKE_EVENTS.filter(
+      (event) => event.league === "Ligue 1"
+    );
+    return request(app.getHttpServer())
+      .get("/calendar?league=Ligue 1")
+      .expect(200)
+      .expect(expectedEvents);
+  });
 });

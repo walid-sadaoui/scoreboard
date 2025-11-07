@@ -1,4 +1,4 @@
-import { Controller, Get, Inject } from "@nestjs/common";
+import { Controller, Get, Inject, Query } from "@nestjs/common";
 import { CalendarEvent } from "@scoreboard/types";
 import { GetCalendarUseCase } from "../use-cases/get-calendar.usecase";
 
@@ -9,7 +9,7 @@ export class CalendarController {
     private readonly getCalendarUseCase: GetCalendarUseCase
   ) {}
   @Get()
-  async findAll(): Promise<CalendarEvent[]> {
-    return await this.getCalendarUseCase.execute();
+  async findAll(@Query("league") league?: string): Promise<CalendarEvent[]> {
+    return await this.getCalendarUseCase.execute(league);
   }
 }
