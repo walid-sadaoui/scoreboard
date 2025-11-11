@@ -13,9 +13,11 @@ export class GetCalendarUseCase {
         return events;
       }
       return events.filter((event) => event.league === trimmedLeague);
-    } catch {
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       throw new InternalServerErrorException(
-        "Failed to retrieve calendar events"
+        `Failed to retrieve calendar events: ${errorMessage}`
       );
     }
   }

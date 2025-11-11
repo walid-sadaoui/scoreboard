@@ -59,7 +59,23 @@ describe("Get Calendar UseCase", () => {
     const getCalendarUseCase = new GetCalendarUseCase(mockStore);
 
     await expect(getCalendarUseCase.execute()).rejects.toThrow(
-      new InternalServerErrorException("Failed to retrieve calendar events")
+      new InternalServerErrorException(
+        "Failed to retrieve calendar events: Database error"
+      )
+    );
+  });
+
+  it("should preserve original error message when store fails", async () => {
+    const originalError = new Error("Connection timeout");
+    const mockStore: CalendarStore = {
+      getCalendar: jest.fn().mockRejectedValue(originalError),
+    };
+    const getCalendarUseCase = new GetCalendarUseCase(mockStore);
+
+    await expect(getCalendarUseCase.execute()).rejects.toThrow(
+      new InternalServerErrorException(
+        "Failed to retrieve calendar events: Connection timeout"
+      )
     );
   });
 });
