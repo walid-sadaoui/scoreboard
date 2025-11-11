@@ -23,4 +23,30 @@ describe("Get Calendar UseCase", () => {
       );
     }
   );
+
+  it("should return all games when league is empty string", async () => {
+    const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
+    const calendar = await getCalendarUseCase.execute("");
+    expect(calendar).toEqual(FAKE_EVENTS);
+  });
+
+  it("should return all games when league is whitespace-only", async () => {
+    const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
+    const calendar = await getCalendarUseCase.execute("   ");
+    expect(calendar).toEqual(FAKE_EVENTS);
+  });
+
+  it("should trim league parameter before filtering", async () => {
+    const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
+    const calendar = await getCalendarUseCase.execute("  Ligue 1  ");
+    expect(calendar).toEqual(
+      FAKE_EVENTS.filter((event) => event.league === "Ligue 1")
+    );
+  });
+
+  it("should return empty array when league does not exist", async () => {
+    const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
+    const calendar = await getCalendarUseCase.execute("NonExistentLeague");
+    expect(calendar).toEqual([]);
+  });
 });

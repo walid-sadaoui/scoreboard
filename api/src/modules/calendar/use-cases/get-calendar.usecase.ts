@@ -5,6 +5,11 @@ export class GetCalendarUseCase {
 
   async execute(league?: string) {
     const events = await this.calendarStore.getCalendar();
-    return league ? events.filter((event) => event.league === league) : events;
+    // Trim and treat empty string or whitespace-only as no filter
+    const trimmedLeague = league?.trim();
+    if (!trimmedLeague) {
+      return events;
+    }
+    return events.filter((event) => event.league === trimmedLeague);
   }
 }
