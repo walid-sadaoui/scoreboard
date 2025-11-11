@@ -1,4 +1,6 @@
+import { InternalServerErrorException } from "@nestjs/common";
 import { FAKE_EVENTS } from "@scoreboard/types";
+import { CalendarStore } from "../stores/calendar.store";
 import { FakeCalendarStore } from "../stores/fake-calendar.store";
 import { GetCalendarUseCase } from "./get-calendar.usecase";
 
@@ -48,5 +50,16 @@ describe("Get Calendar UseCase", () => {
     const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
     const calendar = await getCalendarUseCase.execute("NonExistentLeague");
     expect(calendar).toEqual([]);
+  });
+
+  it("should throw InternalServerErrorException when store fails", async () => {
+    const mockStore: CalendarStore = {
+      getCalendar: jest.fn().mockRejectedValue(new Error("Database error")),
+    };
+    const getCalendarUseCase = new GetCalendarUseCase(mockStore);
+
+    await expect(getCalendarUseCase.execute()).rejects.toThrow(
+      new InternalServerErrorException("Failed to retrieve calendar events")
+    );
   });
 });
