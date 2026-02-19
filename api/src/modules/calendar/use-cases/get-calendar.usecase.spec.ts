@@ -78,4 +78,16 @@ describe("Get Calendar UseCase", () => {
       )
     );
   });
+
+  it("should accept an optional page parameter", async () => {
+    const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
+    const calendar = await getCalendarUseCase.execute(undefined, 1);
+    expect(calendar).toBeDefined();
+  });
+
+  it("should accept an optional limit parameter", async () => {
+    const getCalendarUseCase = new GetCalendarUseCase(fakeCalendarStore);
+    const calendar = await getCalendarUseCase.execute(undefined, undefined, 10);
+    expect(calendar).toBeDefined();
+  });
 });

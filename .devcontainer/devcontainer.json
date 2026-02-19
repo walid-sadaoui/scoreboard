@@ -10,6 +10,10 @@
   "shutdownAction": "stopCompose",
   "remoteUser": "node",
 
+  "mounts": [
+    "source=${localEnv:HOME}/.config/claude-code,target=/home/node/.config/claude-code,type=bind,consistency=cached"
+  ],
+
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },

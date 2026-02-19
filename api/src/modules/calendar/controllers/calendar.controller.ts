@@ -4,6 +4,7 @@ import {
   Inject,
   Query,
   NotFoundException,
+  ParseIntPipe,
 } from "@nestjs/common";
 import { CalendarEvent } from "@scoreboard/types";
 import { GetCalendarUseCase } from "../use-cases/get-calendar.usecase";
@@ -15,8 +16,12 @@ export class CalendarController {
     private readonly getCalendarUseCase: GetCalendarUseCase
   ) {}
   @Get()
-  async findAll(@Query("league") league?: string): Promise<CalendarEvent[]> {
-    const events = await this.getCalendarUseCase.execute(league);
+  async findAll(
+    @Query("league") league?: string,
+    @Query("page", new ParseIntPipe({ optional: true })) page?: number,
+    @Query("limit", new ParseIntPipe({ optional: true })) limit?: number
+  ): Promise<CalendarEvent[]> {
+    const events = await this.getCalendarUseCase.execute(league, page, limit);
 
     if (events.length === 0 && league) {
       throw new NotFoundException(

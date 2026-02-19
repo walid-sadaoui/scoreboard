@@ -70,5 +70,32 @@ describe("CalendarController (e2e)", () => {
 
       return request(app.getHttpServer()).get("/calendar").expect(500);
     });
+
+    it("should accept page query parameter", () => {
+      return request(app.getHttpServer())
+        .get("/calendar?page=1")
+        .expect(200)
+        .expect((res) => {
+          expect(Array.isArray(res.body)).toBe(true);
+        });
+    });
+
+    it("should accept limit query parameter", () => {
+      return request(app.getHttpServer())
+        .get("/calendar?limit=10")
+        .expect(200)
+        .expect((res) => {
+          expect(Array.isArray(res.body)).toBe(true);
+        });
+    });
+
+    it("should accept both page and limit query parameters", () => {
+      return request(app.getHttpServer())
+        .get("/calendar?page=2&limit=5")
+        .expect(200)
+        .expect((res) => {
+          expect(Array.isArray(res.body)).toBe(true);
+        });
+    });
   });
 });
