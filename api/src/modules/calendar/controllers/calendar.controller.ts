@@ -1,4 +1,10 @@
-import { Controller, Get, Inject, Query } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Inject,
+  Query,
+  NotFoundException,
+} from "@nestjs/common";
 import { CalendarEvent } from "@scoreboard/types";
 import { GetCalendarUseCase } from "../use-cases/get-calendar.usecase";
 
@@ -10,6 +16,14 @@ export class CalendarController {
   ) {}
   @Get()
   async findAll(@Query("league") league?: string): Promise<CalendarEvent[]> {
-    return await this.getCalendarUseCase.execute(league);
+    const events = await this.getCalendarUseCase.execute(league);
+
+    if (events.length === 0 && league) {
+      throw new NotFoundException(
+        `No calendar events found for league: ${league}`
+      );
+    }
+
+    return events;
   }
 }
